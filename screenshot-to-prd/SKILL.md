@@ -31,6 +31,7 @@ This is the `grill-with-docs` inheritance. Before interviewing, orient yourself:
 
 - Explore the repo to understand current state. If a question can be answered by reading the code, read the code instead of asking.
 - If `CONTEXT.md` exists, use its glossary vocabulary throughout. If `docs/adr/` exists, respect prior decisions in the area you're touching.
+- If `DESIGN-SYSTEM.md` exists, load it — it's the **visual glossary**, the exact counterpart of `CONTEXT.md`. Hold its tokens (colours, type scale, spacing, radii, components) in mind so you can check the screenshot against them during the interview. If it doesn't exist and this looks like the start of a new app or visual direction, say so and offer to run `screenshot-to-design-system` first — the two skills pair, and a PRD grounded in a known design system beats one inventing visuals as it goes.
 - Cross-reference the screenshot against reality: does this component already exist? Does the data it implies already have a source? Does anything in the image contradict current behavior? Surface conflicts the moment you spot them.
 - These files may not exist yet — this skill often runs early. Don't require them. Create `CONTEXT.md` lazily, only when the first term gets resolved (see step 3).
 
@@ -42,6 +43,7 @@ This is the heart of the skill, and it inherits `grill-me` / `grill-with-docs` d
 - For every question, **provide your recommended answer** — make it easy to agree or push back, not a blank prompt.
 - Walk the decision tree branch by branch, resolving dependencies between decisions in order.
 - When the user uses a fuzzy or overloaded term, sharpen it against the glossary ("you said 'gallery' — is that the saved-pages list or the template picker? those are different"). When a term resolves, update `CONTEXT.md` inline; don't batch it.
+- Challenge the screenshot against the design system the same way you challenge terms against the glossary. When a visual value drifts from `DESIGN-SYSTEM.md`, flag it and ask — one at a time, with a recommendation: "this button is a blue that isn't in your system — a new token, or should it be `primary`?" Treat a brand-new colour, font, or radius as drift to resolve now, not a detail to transcribe into the spec.
 
 Seed your questions from two places: the **ambiguities** you collected in step 1, and the **UI states checklist** below — because the screenshot won't show most of them.
 
@@ -82,11 +84,12 @@ The solution, from the user's perspective.
 ## Screens & UI behavior
 For each screen in the design:
 - **Purpose** — what this screen is for.
-- **Components** — the elements on it (new vs reused).
+- **Components** — the elements on it (new vs reused), named by their design-system token/role where one applies.
 - **States** — default, empty, loading, error, offline, permission-denied, success.
 - **Interactions** — what every control does.
 - **Navigation** — entry points, exits, back behavior.
 - **Data** — what backs each element and where it comes from.
+- **Visual** — reference `DESIGN-SYSTEM.md` tokens by role; list any new tokens this feature deliberately introduces (resolved during the interview, not invented here).
 
 ## User stories
 A long, numbered list. Format: "As a <actor>, I want <capability>, so that <benefit>."
@@ -113,3 +116,4 @@ Anything left unresolved, with the current best guess.
 - If the user provides several screenshots that form a flow, treat them as one feature and capture the transitions between them in **Navigation**.
 - If the screenshot is a competitor's app or a generated mockup, say so in the PRD — "modeled on X" — so later readers know the source isn't ground truth.
 - Degrade gracefully: with no `CONTEXT.md`, no `docs/adr/`, and no issue tracker, this skill still works end to end and just produces a markdown spec.
+- The design system is optional too: with no `DESIGN-SYSTEM.md`, skip the conformance checks and proceed; with one, reference its tokens by role in the spec and record any new tokens the feature introduces.
