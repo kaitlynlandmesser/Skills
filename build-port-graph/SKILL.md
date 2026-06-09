@@ -9,6 +9,8 @@ When porting an app to another platform, the thing that silently breaks a port i
 
 A port graph is not a map of every import. It is only the dependencies that change **what you port first**. If an edge doesn't move that decision, it doesn't belong.
 
+If a `PORT-GRAPH.md` already exists with items under Open questions, your job on this run is to **clear them**: interview the user to resolve each one, then update the doc. Don't hand back a doc that still has askable questions in it.
+
 Work in this order:
 
 1. **Read the codebase and the PRDs first.** Derive the map — don't ask what you can read. Identify (a) the *features* — the units that get ported one at a time, matching the PRDs from `screenshot-to-prd` where they exist — and (b) the *shared building blocks* multiple features lean on: design tokens, navigation containers, base/shared components, services and clients, auth, persistence.
@@ -17,11 +19,11 @@ Work in this order:
 
 3. **Separate what the code shows from what only the user knows.** The code reveals *structural* dependencies — imports, shared types, a common nav host. It cannot reveal *intent* ordering: "port the gallery before the editor because that's my demo path," "do the simplest feature first to establish the Compose patterns." Read the structure; grill the user for the intent.
 
-4. **Grill the edges that matter, one at a time.** For ambiguous or load-bearing edges, ask one question, wait for the answer, and give your recommended answer with it. "The editor imports `PaletteService` and the gallery touches it too — is that one shared block they both need, or two different needs that happen to share a name?" Don't interrogate the obvious edges; confirm the surprising ones — they're the ones that bite during a port.
+4. **Grill the edges that matter, one at a time — don't defer them to the doc.** For every ambiguous or load-bearing edge, ask: one question, wait for the answer, with your recommended answer attached. "The editor imports `PaletteService` and the gallery touches it too — is that one shared block they both need, or two different needs that happen to share a name?" Don't interrogate the obvious edges; confirm the surprising ones — they're the ones that bite during a port. **If a question can be answered by asking the user, ask it now — do not write it into Open questions and move on.** Keep asking until nothing resolvable is left.
 
 5. **Find the cycles.** If two features depend on each other, no clean port order exists — surface it the way `grill-with-docs` surfaces a contradiction, and help break it (usually by extracting the shared piece into its own block). A graph with a cycle isn't finished.
 
-6. **Write `PORT-GRAPH.md` lazily,** only once the edges are confirmed. Put the foundation before the features that need it, and group features into port "waves" by dependency depth. Mark anything unresolved in open questions rather than inventing an edge.
+6. **Write `PORT-GRAPH.md` lazily,** only once the edges are confirmed. Put the foundation before the features that need it, and group features into port "waves" by dependency depth. By the time you write, Open questions should be empty or nearly so — you've already asked. Reserve it strictly for things the user *couldn't* settle because they aren't decided yet; never use it to park a question you could have asked.
 
 </what-to-do>
 
@@ -43,6 +45,9 @@ Read imports and shared types for the real structural dependencies. Ask the huma
 
 ### A cycle means the graph isn't done
 Circular dependencies have no valid port order. Treat a cycle as a defect to resolve, not a fact to record — almost always by lifting the shared dependency out of both features into its own block.
+
+### Interview before you write; don't park askable questions
+The doc is the residue of a conversation, not a substitute for one. When you're unsure about an edge and the user could tell you, ask — one at a time — until nothing resolvable remains. Open questions exists for what asking *can't* settle, not for what you didn't ask. A doc that comes back full of questions the user could have answered is the skill failing at its main job.
 
 ## Output format
 
@@ -76,7 +81,7 @@ graph TD
 ```
 
 ## Open questions
-Ambiguous or unconfirmed edges, with the current best guess.
+Only decisions the user genuinely can't make yet — undecided product direction, a block whose target design isn't settled. Anything answerable by asking should already be resolved above, not parked here. Often empty.
 
 ## Source
 Codebase: <repo / commit>. PRDs read: <list>.
