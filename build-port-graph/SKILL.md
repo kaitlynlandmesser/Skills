@@ -74,10 +74,23 @@ For each feature — `needs` is what must already be ported:
 ## Diagram
 ```mermaid
 graph TD
-  %% nodes = features and shared blocks; edges = "needs"
-  PaletteService --> Editor
+  %% shapes: ([rounded]) = shared foundation block, [rect] = feature
+  %% edge A --> B means "B needs A" — port A first
+  %% colour = wave (port order)
+
+  DesignTokens([DesignTokens]):::w1
+  PaletteService([PaletteService]):::w1
+  Gallery[Gallery]:::w2
+  Editor[Editor]:::w3
+
   DesignTokens --> Gallery
   DesignTokens --> Editor
+  PaletteService --> Editor
+  Gallery --> Editor
+
+  classDef w1 fill:#E8EEF6,stroke:#5a6270;
+  classDef w2 fill:#EAF3EC,stroke:#3F9D6B;
+  classDef w3 fill:#FBF0E2,stroke:#B5651D;
 ```
 
 ## Open questions
@@ -87,7 +100,7 @@ Only decisions the user genuinely can't make yet — undecided product direction
 Codebase: <repo / commit>. PRDs read: <list>.
 ````
 
-The Mermaid diagram is a *view* of the lists above, for eyeballing — regenerate it whenever the lists change; don't hand-edit it as a separate source.
+The Mermaid diagram is a *view* of the lists above, for eyeballing — regenerate it whenever the lists change; don't hand-edit it as a separate source. Rounded nodes are shared foundation blocks, rectangles are features, and colour marks the wave (port order); `graph TD` lays the dependencies out top-down, so the tree reads as the porting sequence from top to bottom. For a small or medium graph this is plenty. A large, tangled graph is the point at which a richer interactive view (pan/zoom, click a feature to highlight its prerequisites) earns its own bundled HTML, the way the audit dashboard does — promote to that only when Mermaid stops being legible.
 
 ### How the export skill reads this
 `feature-to-port-spec` looks up the feature's node, reads its `needs` list, and emits that as the spec's prerequisites — so the per-feature export never rederives dependencies, it reads them here. The graph is the contract between the two skills; they agree on `PORT-GRAPH.md`.
