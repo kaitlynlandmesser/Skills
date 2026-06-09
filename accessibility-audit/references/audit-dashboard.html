@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility audit</title>
+<!--
+  DASHBOARD TEMPLATE — replace the ISSUES array below with the real audit issues
+  (same fields as the markdown table), then save as accessibility-audit.html.
+  The template renders counts, filters, and sortable rows from that array — you
+  supply only the data. You may adapt the look, but keep the filtering working.
+-->
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#FAFAF9;color:#1c1c1c;
+       font:14px/1.55 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif;padding:32px 24px 80px;}
+  .wrap{max-width:1100px;margin:0 auto;}
+  h1{font-size:20px;margin:0 0 4px;}
+  .sub{color:#7a756e;font-size:13px;margin:0 0 20px;}
+  .counts{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+  .count{border:1px solid #E5E2DD;border-radius:10px;padding:10px 14px;background:#fff;font-size:13px;}
+  .count b{font-size:18px;display:block;}
+  .count.blocker b{color:#B3261E;} .count.serious b{color:#B5651D;} .count.minor b{color:#5a6270;}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
+  select,input[type=search]{font:inherit;padding:7px 10px;border:1px solid #D8D4CD;border-radius:8px;background:#fff;}
+  input[type=search]{flex:1;min-width:180px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E5E2DD;border-radius:10px;overflow:hidden;}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid #EEEBE6;vertical-align:top;font-size:13px;}
+  th{background:#F6F1EC;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#8a847c;cursor:pointer;user-select:none;}
+  tr:last-child td{border-bottom:0;}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap;}
+  .sev-blocker{background:#FBE9E7;color:#B3261E;} .sev-serious{background:#FBF0E2;color:#B5651D;} .sev-minor{background:#EEF0F3;color:#5a6270;}
+  .conf-needs{color:#B5651D;font-style:italic;}
+  .file{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#444;white-space:nowrap;}
+  .empty{padding:24px;text-align:center;color:#9a948c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Accessibility audit</h1>
+  <p class="sub">Static code audit · Apple HIG + Google/Material · identifies issues only. Located by file:line — re-read before fixing.</p>
+  <div class="counts" id="counts"></div>
+  <div class="filters">
+    <select id="f-sev"><option value="">All severities</option><option>blocker</option><option>serious</option><option>minor</option></select>
+    <select id="f-plat"><option value="">All platforms</option></select>
+    <select id="f-cat"><option value="">All categories</option></select>
+    <select id="f-conf"><option value="">All confidence</option><option value="confirmed-from-code">confirmed-from-code</option><option value="needs-manual-check">needs-manual-check</option></select>
+    <input type="search" id="f-q" placeholder="Search file, element, issue…">
+  </div>
+  <table id="tbl">
+    <thead><tr>
+      <th data-k="id">ID</th><th data-k="severity">Sev</th><th data-k="platform">Platform</th>
+      <th data-k="file">File:line</th><th data-k="element">Element</th><th data-k="category">Category</th>
+      <th data-k="issue">Issue</th><th data-k="confidence">Confidence</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script>
+  // ===== REPLACE THIS ARRAY WITH THE REAL AUDIT ISSUES =====
+  const ISSUES = [
+    { id:"A11Y-001", severity:"serious", platform:"iOS", file:"EditorView.swift:42", element:"save button",
+      category:"Screen-reader semantics", issue:"Icon-only button has no accessible label", confidence:"confirmed-from-code" },
+    { id:"A11Y-002", severity:"minor", platform:"Android", file:"GalleryScreen.kt:88", element:"thumbnail grid",
+      category:"Dynamic Type", issue:"Caption text uses dp instead of sp", confidence:"confirmed-from-code" },
+    { id:"A11Y-003", severity:"serious", platform:"iOS", file:"HeaderView.swift:17", element:"title over gradient",
+      category:"Contrast & color", issue:"Title contrast over gradient header may fall below 4.5:1", confidence:"needs-manual-check" }
+  ];
+  // =========================================================
+  const SEV_ORDER = { blocker:0, serious:1, minor:2 };
+  let sortKey = "severity", sortDir = 1;
+  const $ = s => document.querySelector(s);
+  const uniq = (arr) => [...new Set(arr)].sort();
+  // populate platform + category filters from the data
+  uniq(ISSUES.map(i=>i.platform)).forEach(p=>$("#f-plat").add(new Option(p,p)));
+  uniq(ISSUES.map(i=>i.category)).forEach(c=>$("#f-cat").add(new Option(c,c)));
+  function filtered(){
+    const sev=$("#f-sev").value, plat=$("#f-plat").value, cat=$("#f-cat").value, conf=$("#f-conf").value;
+    const q=$("#f-q").value.trim().toLowerCase();
+    return ISSUES.filter(i =>
+      (!sev||i.severity===sev) && (!plat||i.platform===plat) && (!cat||i.category===cat) &&
+      (!conf||i.confidence===conf) &&
+      (!q || (i.file+i.element+i.issue+i.id).toLowerCase().includes(q))
+    ).sort((a,b)=>{
+      let av=a[sortKey], bv=b[sortKey];
+      if(sortKey==="severity"){ av=SEV_ORDER[av]; bv=SEV_ORDER[bv]; }
+      return (av<bv?-1:av>bv?1:0)*sortDir;
+    });
+  }
+  function renderCounts(){
+    const c={blocker:0,serious:0,minor:0,ios:0,android:0,manual:0};
+    ISSUES.forEach(i=>{ c[i.severity]++; if(i.platform==="iOS")c.ios++; if(i.platform==="Android")c.android++;
+      if(i.confidence==="needs-manual-check")c.manual++; });
+    $("#counts").innerHTML =
+      `<div class="count blocker"><b>${c.blocker}</b>blockers</div>`+
+      `<div class="count serious"><b>${c.serious}</b>serious</div>`+
+      `<div class="count minor"><b>${c.minor}</b>minor</div>`+
+      `<div class="count"><b>${c.ios}</b>iOS</div>`+
+      `<div class="count"><b>${c.android}</b>Android</div>`+
+      `<div class="count"><b>${c.manual}</b>needs manual check</div>`;
+  }
+  function render(){
+    const rows=filtered();
+    $("#rows").innerHTML = rows.length ? rows.map(i=>`
+      <tr>
+        <td class="file">${i.id}</td>
+        <td><span class="pill sev-${i.severity}">${i.severity}</span></td>
+        <td>${i.platform}</td>
+        <td class="file">${i.file}</td>
+        <td>${i.element}</td>
+        <td>${i.category}</td>
+        <td>${i.issue}</td>
+        <td class="${i.confidence==="needs-manual-check"?"conf-needs":""}">${i.confidence}</td>
+      </tr>`).join("") : `<tr><td class="empty" colspan="8">No issues match these filters.</td></tr>`;
+  }
+  ["#f-sev","#f-plat","#f-cat","#f-conf","#f-q"].forEach(s=>$(s).addEventListener("input",render));
+  document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{
+    const k=th.dataset.k; sortDir = (k===sortKey? -sortDir : 1); sortKey=k; render();
+  }));
+  renderCounts(); render();
+</script>
+</body>
+</html>
