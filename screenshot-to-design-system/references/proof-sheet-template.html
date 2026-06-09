@@ -116,9 +116,12 @@
   .oq li:first-child{border-top:0;}
   .oq .flag{color:var(--danger);font-weight:600;margin-right:6px;}
 
-  /* source slot */
-  .source-slot{border:2px dashed #DAD4CC;border-radius:12px;padding:28px;text-align:center;
-               color:#9a948c;font-size:13px;}
+  /* source — embed the actual screenshots so the system can be checked against them */
+  .source-slot{display:flex;gap:14px;flex-wrap:wrap;}
+  .source-slot .shot{flex:1;min-width:130px;max-width:180px;border:1px solid #E5E2DD;
+               border-radius:10px;background:#fff;padding:8px;text-align:center;
+               color:#9a948c;font-size:12px;}
+  .source-slot .shot img{width:100%;border-radius:6px;display:block;margin-bottom:6px;}
 </style>
 </head>
 <body>
@@ -211,7 +214,13 @@
 
   <section>
     <h2>Source</h2>
-    <div class="source-slot">Drop the screenshots this system was inferred from here, side-by-side, for direct comparison.</div>
+    <!-- Embed the ACTUAL source screenshots (one .shot per image) with relative paths to the
+         files sitting next to this HTML, so the system can be checked against them directly.
+         Do NOT leave this as a placeholder — a proof sheet without its screenshots can't be verified. -->
+    <div class="source-slot">
+      <div class="shot"><img src="screenshot-1.png" alt="">screenshot-1 · &lt;label&gt;</div>
+      <div class="shot"><img src="screenshot-2.png" alt="">screenshot-2 · &lt;label&gt;</div>
+    </div>
   </section>
 
 </div>
