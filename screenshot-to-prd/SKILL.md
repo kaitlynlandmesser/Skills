@@ -1,6 +1,6 @@
 ---
 name: screenshot-to-prd
-description: Turn one or more UI screenshots — mockups, competitor-app screens, hand sketches, Stitch/Figma exports, or shots of an existing screen — into a feature PRD by reading the image, interviewing the user one question at a time, then synthesizing a spec. Use this at the START of building any new feature, any time the user shares a screenshot, mockup, or design and wants a spec/PRD, or asks you to "ask me questions and write a spec" — even if they never say the word "PRD". Builds a grill-with-docs–style interview on top of a screenshot analysis, and ends with a to-prd–style synthesis.
+description: Turn one or more UI images — rough mockups, hand sketches, Stitch/Figma exports, competitor-app screens, or shots of an existing screen — into a feature PRD by reading the image, interviewing the user one question at a time, then synthesizing a spec. Fidelity doesn't matter: a rough mockup is enough, because the design system carries the visual detail and this skill cares about behavior and structure, not pixels. Use this at the START of building any new feature, any time the user shares a mockup, screenshot, or design and wants a spec/PRD, or asks you to "ask me questions and write a spec" — even if they never say the word "PRD". Builds a grill-with-docs–style interview on top of a screenshot analysis, and ends with a to-prd–style synthesis.
 ---
 
 # Screenshot → PRD
@@ -11,7 +11,7 @@ This skill composes three moves: **analyze the screenshot**, **interview like `g
 
 ## When to use
 
-Use at the very start of a new feature whenever the user hands over an image of a UI and wants it turned into a spec. The image may be aspirational (a mockup, a competitor's app, a sketch, a generated design) or real (a screen that already exists and is being formalized or ported). Do not wait for the user to say "PRD" — "here's a screenshot, ask me questions and write the spec" is the trigger.
+Use at the very start of a new feature whenever the user hands over an image of a UI and wants it turned into a spec. The image may be aspirational (a mockup, a competitor's app, a sketch, a generated design) or real (a screen that already exists and is being formalized or ported). **Fidelity is irrelevant — a rough mockup works as well as a pixel-perfect screenshot.** When a `DESIGN-SYSTEM.md` exists, the visual detail lives there; this skill reads the image for *what the feature is and does* — its screens, states, data, and interactions — not for exact colours and spacing. So don't wait for a polished design, and don't wait for the user to say "PRD" — "here's a mockup, ask me questions and write the spec" is the trigger.
 
 ## Process
 
