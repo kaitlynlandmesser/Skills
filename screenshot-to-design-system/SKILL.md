@@ -15,11 +15,11 @@ Work in this order:
 
 3. **Cut the one-offs.** Any value that appears only once across the whole set is a candidate for removal, not a token. Surface it and recommend dropping or folding it into an existing token. *Example: ten screenshots and a typeface that shows up on exactly one of them — propose dropping it ("this serif appears once, on the onboarding screen — drop it, or is it a deliberate accent?"). Default to dropping.*
 
-4. **Never guess what you cannot see.** You can read a hex value reliably. You usually cannot read a typeface, an exact point size, the true base spacing unit, or whether two near-identical greys are one token at different opacities or two distinct ones. When your confidence is low, **ask — one question at a time, wait for my answer, and give your recommended answer with each.** Fonts especially: describe what you observe ("geometric sans-serif, ~17pt, medium weight") and ask me to confirm the family. Do not assert "this is Inter."
+4. **Never guess what you cannot see, and never park what you could ask.** You can read a hex value reliably. You usually cannot read a typeface, an exact point size, the true base spacing unit, or whether two near-identical greys are one token at different opacities or two distinct ones. When your confidence is low, **ask — one question at a time, wait for my answer, and give your recommended answer with each.** Fonts especially: describe what you observe ("geometric sans-serif, ~17pt, medium weight") and ask me to confirm the family; do not assert "this is Inter." Anything you'd otherwise note as low-confidence or list under open questions is, by definition, something to ask about — ask it now, don't write it down as a guess. Keep asking until nothing askable is left.
 
-5. **Write `DESIGN-SYSTEM.md` lazily.** Only write it once values are confirmed — don't commit a guess to disk. Keep it minimal. Mark anything still unconfirmed in the open-questions section rather than inventing a value to fill the gap.
+5. **Write `DESIGN-SYSTEM.md` lazily.** Only write it once values are confirmed — don't commit a guess to disk. Keep it minimal. By the time you write, open / low-confidence should be empty or nearly so — you've already asked. Reserve it strictly for what I genuinely can't decide yet, never for a value you could have confirmed by asking.
 
-6. **Generate the visual proof sheet.** Always finish by writing `design-system-proof-sheet.html` next to the markdown, so I can *see* the system and check it against the screenshots — a system I can't see is one I can't trust. Render every token visually from the values you just confirmed (see the proof-sheet spec below). This is a view, not a source: regenerate it whenever the markdown changes, and never ask me to hand-edit it.
+6. **Generate the visual proof sheet.** Always finish by writing `design-system-proof-sheet.html` next to the markdown, so I can *see* the system and check it against the screenshots — a system I can't see is one I can't trust. Use `references/proof-sheet-template.html` as a **starting guide** — it's a known-good layout that encodes my preferences (large colour tiles, components grouped by type, neutral chrome) — but you have free reign to adapt its structure and styling to fit the system you actually found. Set the tokens to the confirmed values, render every token, and omit sections the system doesn't have. Just preserve the two properties that make it a verification tool (below). This is a view, not a source: regenerate it whenever the markdown changes, and never ask me to hand-edit it.
 
 </what-to-do>
 
@@ -41,6 +41,9 @@ Name tokens for what they *do* — `primary`, `surface`, `danger`, `body`, `capt
 
 ### Reconcile with code when it exists
 This skill is for the start of an app, when the pixels are the only source of truth. If the repo already has design tokens (`Assets.xcassets`, a SwiftUI `Color`/`Font` extension, a Compose theme), read those instead and let them win — the code is the real system, the screenshot is just a view of it. Flag any place the image contradicts the code.
+
+### Ask before you park
+Anything you'd note as low-confidence or list under open questions is something to ask about first — fonts, merged colours, dropped one-offs, the base unit are all askable. Resolve them in the interview, one at a time. Open / low-confidence is only for what I genuinely can't decide yet, and it's usually empty. Don't hand me a system with questions in it that I could have answered.
 
 ## Output format
 
@@ -75,7 +78,7 @@ Recurring patterns only — `component — what it's composed of`
 - <component> — ...
 
 ## Open / low-confidence
-Things still to confirm — fonts, duplicate-vs-distinct colours, the true base unit.
+Only what I genuinely can't decide yet. Everything askable — fonts, duplicate-vs-distinct colours, the base unit — should already be resolved in the interview, not parked here. Often empty.
 
 ## Source
 Images: <list>. Reconcile against code tokens once they exist.
@@ -83,13 +86,11 @@ Images: <list>. Reconcile against code tokens once they exist.
 
 ## Proof sheet
 
-The proof sheet is how a human verifies a system that was guessed from pixels. Build it as a single self-contained `design-system-proof-sheet.html` — inline CSS, no external dependencies, opens straight from disk.
+The proof sheet is how a human verifies a system that was guessed from pixels. `references/proof-sheet-template.html` is a **guide, not a cage** — a known-good starting layout (large colour tiles, typed component groups, neutral chrome) that you're free to adapt to the system in front of you. Whatever you change, keep the two properties that make it a verification tool rather than decoration:
 
-Two rules give it its value:
+- **Render from the tokens, not around them.** Draw every sample from the token values, so a wrong value produces a visibly wrong page. Keep the chrome neutral so the tokens are the only thing that stands out.
+- **Let the checking sections carry the load.** Compose tokens into real UI grouped by type (buttons, cards, list rows), because mismatches against the screenshot surface there, not in isolated swatches. Fill the open / low-confidence section with whatever the interview genuinely couldn't resolve — usually little or nothing, since you asked.
 
-- **Render from the tokens, not around them.** Define the confirmed tokens as CSS variables and draw every sample from them, so a wrong value produces a visibly wrong page. Keep the page chrome deliberately neutral — the tokens are the only thing that should stand out, never the proof sheet's own styling.
-- **Make the checking sections do real work.** Include a *components* section that composes the tokens into a few real UI pieces (a button, a card, a list row), because mismatches against the screenshot show up there, not in isolated swatches. Include an *open / low-confidence* section that lists exactly the calls you made — the font you guessed, the colours you merged, the one-offs you dropped — so I have a punch-list to confirm or overturn.
-
-Sections to render: colours (as swatches), typography (as specimens with the role/size/weight noted), spacing (as bars at each step), radii, elevation, components, open/low-confidence, and a slot to place the source screenshots beside it for direct comparison.
+Adapt the layout as the system needs — more colours, a denser grid, an extra component type — but don't let restyling bury those two properties.
 
 </supporting-info>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design system proof sheet</title>
+<!--
+  STARTING GUIDE — a known-good layout you can freely adapt.
+  Encodes preferences worth keeping: large colour tiles, components grouped by type, neutral chrome.
+  To use:
+   1. Set the :root tokens to the confirmed values.
+   2. Fill each section from the real tokens; omit what the system doesn't have.
+   3. Adapt the structure or styling as the system needs — this is a guide, not a fixed template.
+  Keep two properties whatever you change: render samples FROM the tokens (so wrong values look
+  wrong), and keep the chrome neutral so the tokens stand out.
+-->
+<style>
+  /* ===== TOKENS (fill these) ===== */
+  :root{
+    /* colors */
+    --primary:#E2553A;
+    --primary-pressed:#C2422B;
+    --surface:#FFFFFF;
+    --surface-muted:#F6F1EC;
+    --ink:#241C18;
+    --ink-soft:#6E635B;
+    --success:#3F9D6B;
+    --danger:#C8453B;
+    /* typography */
+    --font-display:"Fraunces", Georgia, serif;
+    --font-body:-apple-system, "Segoe UI", system-ui, sans-serif;
+    /* spacing base unit */
+    --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+    --space-6:24px; --space-8:32px;
+    /* radii */
+    --radius-sm:6px; --radius-md:12px; --radius-lg:20px; --radius-pill:999px;
+    /* elevation */
+    --elev-1:0 1px 2px rgba(36,28,24,.08);
+    --elev-2:0 4px 12px rgba(36,28,24,.12);
+  }
+
+  /* ===== NEUTRAL CHROME (deliberately quiet) ===== */
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#FAFAF9; color:#1c1c1c;
+    font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif;
+    padding:40px 24px 80px;
+  }
+  .wrap{max-width:880px;margin:0 auto;}
+  header.sheet{border-bottom:1px solid #E5E2DD;padding-bottom:20px;margin-bottom:8px;}
+  header.sheet h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em;}
+  header.sheet .sub{color:#7a756e;font-size:13px;margin:0;}
+  section{margin:0 0 44px;}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#8a847c;
+     margin:0 0 16px;font-weight:600;}
+  .meta{color:#9a948c;font-size:12px;}
+
+  /* colors — large, prominent tiles */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
+  .sw{border:1px solid #E5E2DD;border-radius:12px;overflow:hidden;background:#fff;}
+  .sw .chip{height:120px;}
+  .sw .lbl{padding:12px 14px;}
+  .sw .role{font-weight:600;font-size:15px;}
+  .sw .hex{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#7a756e;margin-top:2px;}
+  .sw .use{font-size:12px;color:#9a948c;margin-top:4px;}
+
+  /* type specimens */
+  .spec{border-top:1px solid #EEEBE6;padding:14px 0;display:flex;align-items:baseline;
+        justify-content:space-between;gap:24px;}
+  .spec:first-of-type{border-top:0;}
+  .spec .detail{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#9a948c;
+                white-space:nowrap;}
+  .t-title{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--ink);line-height:1.15;}
+  .t-heading{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink);}
+  .t-body{font-family:var(--font-body);font-size:16px;color:var(--ink);}
+  .t-caption{font-family:var(--font-body);font-size:13px;color:var(--ink-soft);}
+
+  /* spacing */
+  .spacing{display:flex;flex-direction:column;gap:10px;}
+  .sp-row{display:flex;align-items:center;gap:14px;}
+  .sp-bar{height:16px;background:var(--primary);border-radius:3px;}
+  .sp-name{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#7a756e;width:120px;}
+
+  /* radii */
+  .radii{display:flex;gap:18px;flex-wrap:wrap;}
+  .rad{text-align:center;}
+  .rad .box{width:72px;height:72px;background:var(--surface-muted);border:1px solid #E5E2DD;}
+  .rad .cap{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7a756e;margin-top:6px;}
+
+  /* elevation */
+  .elev{display:flex;gap:24px;flex-wrap:wrap;}
+  .ecard{width:120px;height:72px;background:#fff;border-radius:10px;display:flex;
+         align-items:center;justify-content:center;font-size:12px;color:#7a756e;}
+
+  /* components — grouped by type */
+  .comp-group{margin-bottom:26px;}
+  .comp-group:last-child{margin-bottom:0;}
+  .comp-group h3{font-size:13px;font-weight:600;color:var(--ink);margin:0 0 12px;}
+  .comp-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;}
+  .btn{font-family:var(--font-body);font-weight:600;color:#fff;background:var(--primary);
+       border:0;padding:12px 20px;border-radius:var(--radius-pill);font-size:15px;cursor:pointer;}
+  .btn.secondary{background:var(--surface-muted);color:var(--ink);}
+  .card{background:var(--surface);border:1px solid #ECE7E1;border-radius:var(--radius-md);
+        padding:var(--space-4);box-shadow:var(--elev-1);max-width:320px;}
+  .card h4{font-family:var(--font-display);margin:0 0 4px;font-size:17px;color:var(--ink);}
+  .card p{margin:0;color:var(--ink-soft);font-size:14px;}
+  .listrow{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #ECE7E1;
+       border-radius:var(--radius-md);padding:12px 14px;min-width:300px;}
+  .listrow .dot{width:36px;height:36px;border-radius:var(--radius-pill);background:var(--surface-muted);}
+  .listrow .txt strong{display:block;font-size:14px;color:var(--ink);}
+  .listrow .txt span{font-size:12px;color:var(--ink-soft);}
+
+  /* open questions */
+  .oq{list-style:none;padding:0;margin:0;}
+  .oq li{padding:10px 0;border-top:1px dashed #E5E2DD;font-size:14px;}
+  .oq li:first-child{border-top:0;}
+  .oq .flag{color:var(--danger);font-weight:600;margin-right:6px;}
+
+  /* source slot */
+  .source-slot{border:2px dashed #DAD4CC;border-radius:12px;padding:28px;text-align:center;
+               color:#9a948c;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="sheet">
+    <h1>Design system — &lt;app name&gt;</h1>
+    <p class="sub">Verify each token against your source screenshots. Inferred from images — a hypothesis until confirmed.</p>
+  </header>
+
+  <section>
+    <h2>Colors <span class="meta">· semantic roles, not raw values</span></h2>
+    <div class="swatches">
+      <!-- one .sw per color token -->
+      <div class="sw"><div class="chip" style="background:var(--primary)"></div><div class="lbl"><div class="role">primary</div><div class="hex">#E2553A</div><div class="use">CTAs, active states</div></div></div>
+      <div class="sw"><div class="chip" style="background:var(--surface-muted)"></div><div class="lbl"><div class="role">surface-muted</div><div class="hex">#F6F1EC</div><div class="use">cards, fills</div></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ink)"></div><div class="lbl"><div class="role">ink</div><div class="hex">#241C18</div><div class="use">primary text</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typography</h2>
+    <!-- one .spec per type role -->
+    <div class="spec"><span class="t-title">Title specimen</span><span class="detail">title · &lt;family&gt; · 28 / 600</span></div>
+    <div class="spec"><span class="t-heading">Heading specimen</span><span class="detail">heading · &lt;family&gt; · 20 / 600</span></div>
+    <div class="spec"><span class="t-body">Body specimen — a sentence at body size.</span><span class="detail">body · &lt;family&gt; · 16 / 400</span></div>
+    <div class="spec"><span class="t-caption">Caption specimen</span><span class="detail">caption · &lt;family&gt; · 13 / 400</span></div>
+  </section>
+
+  <section>
+    <h2>Spacing <span class="meta">· base unit, used as multiples</span></h2>
+    <div class="spacing">
+      <!-- one .sp-row per step; bar width = the px value -->
+      <div class="sp-row"><span class="sp-name">space-1 · 4</span><div class="sp-bar" style="width:4px"></div></div>
+      <div class="sp-row"><span class="sp-name">space-2 · 8</span><div class="sp-bar" style="width:8px"></div></div>
+      <div class="sp-row"><span class="sp-name">space-4 · 16</span><div class="sp-bar" style="width:16px"></div></div>
+      <div class="sp-row"><span class="sp-name">space-8 · 32</span><div class="sp-bar" style="width:32px"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Radii</h2>
+    <div class="radii">
+      <div class="rad"><div class="box" style="border-radius:var(--radius-sm)"></div><div class="cap">sm · 6</div></div>
+      <div class="rad"><div class="box" style="border-radius:var(--radius-md)"></div><div class="cap">md · 12</div></div>
+      <div class="rad"><div class="box" style="border-radius:var(--radius-lg)"></div><div class="cap">lg · 20</div></div>
+      <div class="rad"><div class="box" style="border-radius:var(--radius-pill)"></div><div class="cap">pill</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Elevation</h2>
+    <div class="elev">
+      <div class="ecard" style="box-shadow:var(--elev-1)">elev-1</div>
+      <div class="ecard" style="box-shadow:var(--elev-2)">elev-2</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Components <span class="meta">· grouped by type, built from the tokens above</span></h2>
+    <!-- one .comp-group per component type; omit types the system doesn't have -->
+    <div class="comp-group">
+      <h3>Buttons</h3>
+      <div class="comp-row">
+        <button class="btn">Primary</button>
+        <button class="btn secondary">Secondary</button>
+      </div>
+    </div>
+    <div class="comp-group">
+      <h3>Cards</h3>
+      <div class="comp-row">
+        <div class="card"><h4>Card title</h4><p>Supporting line of body text.</p></div>
+      </div>
+    </div>
+    <div class="comp-group">
+      <h3>List rows</h3>
+      <div class="comp-row">
+        <div class="listrow"><div class="dot"></div><div class="txt"><strong>Row title</strong><span>Secondary text</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Open / low-confidence</h2>
+    <ul class="oq">
+      <!-- one li per deferred/low-confidence call -->
+      <li><span class="flag">confirm</span>&lt;the call you made and want verified&gt;</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Source</h2>
+    <div class="source-slot">Drop the screenshots this system was inferred from here, side-by-side, for direct comparison.</div>
+  </section>
+
+</div>
+</body>
+</html>
