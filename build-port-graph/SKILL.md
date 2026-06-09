@@ -57,7 +57,7 @@ Write `PORT-GRAPH.md`. Keep it lean — it's a reference, not a report.
 # Port graph — <app name>
 
 > Maps features to the shared blocks they need and the order to port them.
-> Read by `feature-to-port-spec` to fill each spec's "port these first" section.
+> Read by `mobile-port-spec` to fill each spec's "port these first" section.
 
 ## Shared foundation (port first, in this order)
 - <block> — <what it is> — needed by: <features>
@@ -103,6 +103,6 @@ Codebase: <repo / commit>. PRDs read: <list>.
 The Mermaid diagram is a *view* of the lists above, for eyeballing — regenerate it whenever the lists change; don't hand-edit it as a separate source. Rounded nodes are shared foundation blocks, rectangles are features, and colour marks the wave (port order); `graph TD` lays the dependencies out top-down, so the tree reads as the porting sequence from top to bottom. For a small or medium graph this is plenty. A large, tangled graph is the point at which a richer interactive view (pan/zoom, click a feature to highlight its prerequisites) earns its own bundled HTML, the way the audit dashboard does — promote to that only when Mermaid stops being legible.
 
 ### How the export skill reads this
-`feature-to-port-spec` looks up the feature's node, reads its `needs` list, and emits that as the spec's prerequisites — so the per-feature export never rederives dependencies, it reads them here. The graph is the contract between the two skills; they agree on `PORT-GRAPH.md`.
+`mobile-port-spec` looks up the feature's node, reads its `needs` list, and emits that as the spec's prerequisites — so the per-feature export never rederives dependencies, it reads them here. The graph is the contract between the two skills; they agree on `PORT-GRAPH.md`.
 
 </supporting-info>

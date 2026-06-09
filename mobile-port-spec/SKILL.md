@@ -1,5 +1,5 @@
 ---
-name: feature-to-port-spec
+name: mobile-port-spec
 description: Generate cross-platform port specs — one per feature — by reading PORT-GRAPH.md and, for each feature in port order, reconciling its shipped code with its PRD, interviewing the user on what reconciliation surfaces, and writing a spec the target-platform agent will consume. Works one feature at a time in a single attended session so the interview stays in context. Use when porting an app to another platform (iOS↔Android) and the user wants port specs written for the target agent. Runs after build-port-graph.
 ---
 
